@@ -1,5 +1,5 @@
+import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 class AppTextStyles {
   AppTextStyles._();

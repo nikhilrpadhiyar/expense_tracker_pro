@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/core/theme/app_text_styles.dart';
@@ -6,6 +5,7 @@ import 'package:expense_tracker_pro/core/utils/currency_formatter.dart';
 import 'package:expense_tracker_pro/core/utils/date_utils.dart';
 import 'package:expense_tracker_pro/core/utils/extensions.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
+import 'package:flutter/material.dart';
 
 class ExpenseListTile extends StatelessWidget {
   const ExpenseListTile({
@@ -21,8 +21,8 @@ class ExpenseListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cat = ExpenseCategories.findById(expense.categoryId);
-    final isExpense = expense.isExpense;
+    final ExpenseCategory cat = ExpenseCategories.findById(expense.categoryId);
+    final bool isExpense = expense.isExpense;
 
     String dateLabel;
     if (expense.date.isToday) {
@@ -35,10 +35,7 @@ class ExpenseListTile extends StatelessWidget {
 
     return ListTile(
       onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 4,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
         width: 44,
         height: 44,
@@ -61,7 +58,7 @@ class ExpenseListTile extends StatelessWidget {
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
+        children: <Widget>[
           Text(
             '${isExpense ? '-' : '+'}'
             '${CurrencyFormatter.format(expense.amount)}',
@@ -71,7 +68,11 @@ class ExpenseListTile extends StatelessWidget {
             ),
           ),
           if (!expense.isSynced)
-            const Icon(Icons.cloud_off_rounded, size: 12, color: AppColors.grey400),
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 12,
+              color: AppColors.grey400,
+            ),
         ],
       ),
     );

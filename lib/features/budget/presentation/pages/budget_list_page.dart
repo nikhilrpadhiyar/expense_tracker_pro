@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
@@ -9,6 +7,8 @@ import 'package:expense_tracker_pro/features/budget/domain/entities/budget_entit
 import 'package:expense_tracker_pro/features/budget/presentation/controllers/budget_controller.dart';
 import 'package:expense_tracker_pro/routes/app_pages.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_empty_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BudgetListPage extends GetView<BudgetController> {
   const BudgetListPage({super.key});
@@ -18,7 +18,7 @@ class BudgetListPage extends GetView<BudgetController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Budgets'),
-        actions: [
+        actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => Get.toNamed(AppRoutes.addBudget),
@@ -39,7 +39,7 @@ class BudgetListPage extends GetView<BudgetController> {
         return ListView.builder(
           padding: AppSpacing.screenPadding,
           itemCount: controller.budgets.length,
-          itemBuilder: (_, i) => _BudgetCard(budget: controller.budgets[i]),
+          itemBuilder: (_, int i) => _BudgetCard(budget: controller.budgets[i]),
         );
       }),
     );
@@ -52,21 +52,21 @@ class _BudgetCard extends GetView<BudgetController> {
 
   @override
   Widget build(BuildContext context) {
-    final cat = ExpenseCategories.findById(budget.categoryId);
-    final statusColor = budget.isExceeded
+    final ExpenseCategory cat = ExpenseCategories.findById(budget.categoryId);
+    final Color statusColor = budget.isExceeded
         ? AppColors.expense
         : budget.isNearLimit
-            ? AppColors.warning
-            : AppColors.success;
+        ? AppColors.warning
+        : AppColors.success;
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -79,7 +79,7 @@ class _BudgetCard extends GetView<BudgetController> {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       Text(cat.name, style: context.textTheme.titleMedium),
                       Text(
                         '${CurrencyFormatter.format(budget.spent)} of '
@@ -91,7 +91,7 @@ class _BudgetCard extends GetView<BudgetController> {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     Text(
                       CurrencyFormatter.format(budget.remaining.abs()),
                       style: AppTextStyles.amountMedium.copyWith(
@@ -101,14 +101,18 @@ class _BudgetCard extends GetView<BudgetController> {
                     ),
                     Text(
                       budget.isExceeded ? 'Exceeded' : 'Remaining',
-                      style:
-                          AppTextStyles.labelSmall.copyWith(color: statusColor),
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: statusColor,
+                      ),
                     ),
                   ],
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline_rounded,
-                      color: AppColors.grey400, size: 20),
+                  icon: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: AppColors.grey400,
+                    size: 20,
+                  ),
                   onPressed: () => controller.deleteBudget(budget.id),
                 ),
               ],
@@ -126,7 +130,7 @@ class _BudgetCard extends GetView<BudgetController> {
             const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Text('0', style: AppTextStyles.labelSmall),
                 Text(
                   '${(budget.percentUsed * 100).toStringAsFixed(0)}%',

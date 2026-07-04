@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/core/utils/validators.dart';
@@ -7,6 +5,8 @@ import 'package:expense_tracker_pro/features/auth/presentation/controllers/auth_
 import 'package:expense_tracker_pro/shared/widgets/app_button.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_logo.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RegisterPage extends GetView<AuthController> {
   const RegisterPage({super.key});
@@ -22,7 +22,7 @@ class RegisterPage extends GetView<AuthController> {
             key: controller.registerFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const Center(child: AppLogo(size: 48)),
                 const SizedBox(height: AppSpacing.lg),
                 Text('Create Account', style: context.textTheme.headlineLarge),
@@ -38,7 +38,8 @@ class RegisterPage extends GetView<AuthController> {
                   controller: controller.nameController,
                   label: 'Full Name',
                   hint: 'Enter your full name',
-                  validator: (v) => Validators.required(v, field: 'Name'),
+                  validator: (String? v) =>
+                      Validators.required(v, field: 'Name'),
                   prefixIcon: Icons.person_outline_rounded,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -80,7 +81,7 @@ class RegisterPage extends GetView<AuthController> {
                 const SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: <Widget>[
                     Text(
                       'Already have an account?',
                       style: context.textTheme.bodyMedium,

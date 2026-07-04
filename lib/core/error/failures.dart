@@ -5,7 +5,7 @@ abstract class Failure extends Equatable {
   final String message;
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => <Object>[message];
 }
 
 class NetworkFailure extends Failure {
@@ -17,7 +17,7 @@ class ApiFailure extends Failure {
   final int? statusCode;
 
   @override
-  List<Object> get props => [message, statusCode ?? 0];
+  List<Object> get props => <Object>[message, statusCode ?? 0];
 }
 
 class CacheFailure extends Failure {

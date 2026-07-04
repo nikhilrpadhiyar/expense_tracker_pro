@@ -34,7 +34,7 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Text(label, style: context.textTheme.labelLarge),
         const SizedBox(height: 6),
         TextFormField(

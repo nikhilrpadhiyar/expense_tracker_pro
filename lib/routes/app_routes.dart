@@ -3,15 +3,15 @@ part of 'app_pages.dart';
 abstract class AppRoutes {
   AppRoutes._();
 
-  static const splash = '/';
-  static const login = '/login';
-  static const register = '/register';
-  static const main = '/main';
-  static const addExpense = '/add-expense';
-  static const editExpense = '/edit-expense';
-  static const expenseDetail = '/expense-detail';
-  static const budgets = '/budgets';
-  static const addBudget = '/add-budget';
-  static const reports = '/reports';
-  static const settings = '/settings';
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String main = '/main';
+  static const String addExpense = '/add-expense';
+  static const String editExpense = '/edit-expense';
+  static const String expenseDetail = '/expense-detail';
+  static const String budgets = '/budgets';
+  static const String addBudget = '/add-budget';
+  static const String reports = '/reports';
+  static const String settings = '/settings';
 }

@@ -6,14 +6,15 @@ import 'package:expense_tracker_pro/features/budget/data/models/budget_model.dar
 import 'package:expense_tracker_pro/features/budget/domain/entities/budget_entity.dart';
 import 'package:expense_tracker_pro/features/budget/domain/repositories/budget_repository.dart';
 import 'package:expense_tracker_pro/features/expense/data/datasources/expense_local_datasource.dart';
+import 'package:expense_tracker_pro/features/expense/data/models/expense_model.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
 
 class BudgetRepositoryImpl implements BudgetRepository {
   BudgetRepositoryImpl({
     required BudgetLocalDataSource budgetLocal,
     required ExpenseLocalDataSource expenseLocal,
-  })  : _budgetLocal = budgetLocal,
-        _expenseLocal = expenseLocal;
+  }) : _budgetLocal = budgetLocal,
+       _expenseLocal = expenseLocal;
 
   final BudgetLocalDataSource _budgetLocal;
   final ExpenseLocalDataSource _expenseLocal;
@@ -24,21 +25,28 @@ class BudgetRepositoryImpl implements BudgetRepository {
     required int year,
   }) async {
     try {
-      final models = _budgetLocal.getBudgetsForMonth(month, year);
-      return Right(models.map((m) => m.toEntity()).toList());
+      final List<BudgetModel> models = _budgetLocal.getBudgetsForMonth(
+        month,
+        year,
+      );
+      return Right<Failure, List<BudgetEntity>>(
+        models.map((BudgetModel m) => m.toEntity()).toList(),
+      );
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left<Failure, List<BudgetEntity>>(
+        CacheFailure(message: e.message),
+      );
     }
   }
 
   @override
   Future<Either<Failure, BudgetEntity>> saveBudget(BudgetEntity budget) async {
     try {
-      final model = BudgetModel.fromEntity(budget);
+      final BudgetModel model = BudgetModel.fromEntity(budget);
       await _budgetLocal.saveBudget(model);
-      return Right(budget);
+      return Right<Failure, BudgetEntity>(budget);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left<Failure, BudgetEntity>(CacheFailure(message: e.message));
     }
   }
 
@@ -46,9 +54,9 @@ class BudgetRepositoryImpl implements BudgetRepository {
   Future<Either<Failure, void>> deleteBudget(String id) async {
     try {
       await _budgetLocal.deleteBudget(id);
-      return const Right(null);
+      return const Right<Failure, void>(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left<Failure, void>(CacheFailure(message: e.message));
     }
   }
 
@@ -58,31 +66,37 @@ class BudgetRepositoryImpl implements BudgetRepository {
     required int year,
   }) async {
     try {
-      final budgets = _budgetLocal.getBudgetsForMonth(month, year);
-      final from = DateTime(year, month);
-      final to = DateTime(year, month + 1, 0, 23, 59, 59);
+      final List<BudgetModel> budgets = _budgetLocal.getBudgetsForMonth(
+        month,
+        year,
+      );
+      final DateTime from = DateTime(year, month);
+      final DateTime to = DateTime(year, month + 1, 0, 23, 59, 59);
 
-      final expenses = _expenseLocal.getExpensesFiltered(
+      final List<ExpenseModel> expenses = _expenseLocal.getExpensesFiltered(
         from: from,
         to: to,
         type: ExpenseType.expense,
       );
 
-      final spendingByCategory = <String, double>{};
-      for (final e in expenses) {
+      final Map<String, double> spendingByCategory = <String, double>{};
+      for (final ExpenseModel e in expenses) {
         spendingByCategory[e.categoryId] =
             (spendingByCategory[e.categoryId] ?? 0) + e.amount;
       }
 
-      return Right(
+      return Right<Failure, List<BudgetEntity>>(
         budgets
-            .map((b) => b.toEntity(
-                  spent: spendingByCategory[b.categoryId] ?? 0,
-                ))
+            .map(
+              (BudgetModel b) =>
+                  b.toEntity(spent: spendingByCategory[b.categoryId] ?? 0),
+            )
             .toList(),
       );
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left<Failure, List<BudgetEntity>>(
+        CacheFailure(message: e.message),
+      );
     }
   }
 }

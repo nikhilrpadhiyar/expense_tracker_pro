@@ -1,34 +1,32 @@
+import 'package:expense_tracker_pro/core/constants/app_constants.dart';
+import 'package:expense_tracker_pro/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:expense_tracker_pro/core/constants/app_constants.dart';
-import 'package:expense_tracker_pro/features/auth/presentation/controllers/auth_controller.dart';
 
 class SettingsController extends GetxController {
-  final _box = GetStorage();
+  final GetStorage _box = GetStorage();
 
-  final isDarkMode = false.obs;
-  final selectedCurrency = AppConstants.defaultCurrency.obs;
-  final notificationsEnabled = true.obs;
+  final RxBool isDarkMode = false.obs;
+  final RxString selectedCurrency = AppConstants.defaultCurrency.obs;
+  final RxBool notificationsEnabled = true.obs;
 
-  final currencies = ['USD', 'EUR', 'GBP', 'INR', 'JPY'];
+  final List<String> currencies = <String>['USD', 'EUR', 'GBP', 'INR', 'JPY'];
 
   @override
   void onInit() {
     super.onInit();
-    isDarkMode.value =
-        _box.read<String>(AppConstants.keyThemeMode) == 'dark';
+    isDarkMode.value = _box.read<String>(AppConstants.keyThemeMode) == 'dark';
     selectedCurrency.value =
         _box.read<String>(AppConstants.keyDefaultCurrency) ??
-            AppConstants.defaultCurrency;
+        AppConstants.defaultCurrency;
     notificationsEnabled.value =
         _box.read<bool>(AppConstants.keyNotificationsEnabled) ?? true;
   }
 
   Future<void> toggleTheme() async {
     isDarkMode.value = !isDarkMode.value;
-    Get.changeThemeMode(
-        isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
+    Get.changeThemeMode(isDarkMode.value ? ThemeMode.dark : ThemeMode.light);
     await _box.write(
       AppConstants.keyThemeMode,
       isDarkMode.value ? 'dark' : 'light',

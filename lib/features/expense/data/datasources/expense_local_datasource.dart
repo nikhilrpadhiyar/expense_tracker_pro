@@ -1,8 +1,8 @@
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expense_tracker_pro/core/constants/app_constants.dart';
 import 'package:expense_tracker_pro/core/error/exceptions.dart';
 import 'package:expense_tracker_pro/features/expense/data/models/expense_model.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 abstract class ExpenseLocalDataSource {
   Future<void> saveExpense(ExpenseModel model);
@@ -44,7 +44,8 @@ class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
 
   @override
   List<ExpenseModel> getAllExpenses() =>
-      _box.values.toList()..sort((a, b) => b.date.compareTo(a.date));
+      _box.values.toList()
+        ..sort((ExpenseModel a, ExpenseModel b) => b.date.compareTo(a.date));
 
   @override
   List<ExpenseModel> getExpensesFiltered({
@@ -53,18 +54,18 @@ class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
     String? categoryId,
     ExpenseType? type,
   }) {
-    final fromDate = from ?? DateTime(2000);
-    final toDate = to ?? DateTime(2100);
+    final DateTime fromDate = from ?? DateTime(2000);
+    final DateTime toDate = to ?? DateTime(2100);
 
-    return _box.values.where((e) {
-      final inRange =
-          !e.date.isBefore(fromDate) && !e.date.isAfter(toDate);
-      final matchesCategory =
-          categoryId == null || e.categoryId == categoryId;
-      final matchesType = type == null || e.type == type;
-      return inRange && matchesCategory && matchesType;
-    }).toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+    return _box.values.where((ExpenseModel e) {
+        final bool inRange =
+            !e.date.isBefore(fromDate) && !e.date.isAfter(toDate);
+        final bool matchesCategory =
+            categoryId == null || e.categoryId == categoryId;
+        final bool matchesType = type == null || e.type == type;
+        return inRange && matchesCategory && matchesType;
+      }).toList()
+      ..sort((ExpenseModel a, ExpenseModel b) => b.date.compareTo(a.date));
   }
 
   @override
@@ -72,8 +73,8 @@ class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
 
   @override
   Future<void> markSynced(List<String> ids) async {
-    for (final id in ids) {
-      final model = _box.get(id);
+    for (final String id in ids) {
+      final ExpenseModel? model = _box.get(id);
       if (model != null) {
         model.isSynced = true;
         await model.save();
@@ -83,7 +84,7 @@ class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
 
   @override
   List<ExpenseModel> getUnsynced() =>
-      _box.values.where((e) => !e.isSynced).toList();
+      _box.values.where((ExpenseModel e) => !e.isSynced).toList();
 
   static Future<void> openBox() async {
     await Hive.openBox<ExpenseModel>(AppConstants.boxExpenses);

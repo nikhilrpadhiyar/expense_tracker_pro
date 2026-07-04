@@ -41,21 +41,28 @@ class ExpenseEntity extends Equatable {
     String? receiptUrl,
     bool? isSynced,
     String? userId,
-  }) =>
-      ExpenseEntity(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        amount: amount ?? this.amount,
-        categoryId: categoryId ?? this.categoryId,
-        date: date ?? this.date,
-        type: type ?? this.type,
-        note: note ?? this.note,
-        receiptUrl: receiptUrl ?? this.receiptUrl,
-        isSynced: isSynced ?? this.isSynced,
-        userId: userId ?? this.userId,
-      );
+  }) => ExpenseEntity(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    amount: amount ?? this.amount,
+    categoryId: categoryId ?? this.categoryId,
+    date: date ?? this.date,
+    type: type ?? this.type,
+    note: note ?? this.note,
+    receiptUrl: receiptUrl ?? this.receiptUrl,
+    isSynced: isSynced ?? this.isSynced,
+    userId: userId ?? this.userId,
+  );
 
   @override
-  List<Object?> get props =>
-      [id, title, amount, categoryId, date, type, note, isSynced];
+  List<Object?> get props => <Object?>[
+    id,
+    title,
+    amount,
+    categoryId,
+    date,
+    type,
+    note,
+    isSynced,
+  ];
 }

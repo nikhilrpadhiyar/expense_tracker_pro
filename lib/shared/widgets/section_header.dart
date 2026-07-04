@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
+import 'package:flutter/material.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({super.key, required this.title, this.action});
@@ -16,7 +16,7 @@ class SectionHeader extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           Text(title, style: context.textTheme.titleMedium),
           if (action != null) action!,
         ],

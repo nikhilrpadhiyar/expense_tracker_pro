@@ -20,9 +20,11 @@ class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
     String userId,
   ) async {
     try {
-      final batch = _firestore.batch();
-      for (final expense in expenses) {
-        final doc = _collection(userId).doc(expense.id);
+      final WriteBatch batch = _firestore.batch();
+      for (final ExpenseModel expense in expenses) {
+        final DocumentReference<Map<String, dynamic>> doc = _collection(
+          userId,
+        ).doc(expense.id);
         batch.set(doc, expense.toFirestore());
       }
       await batch.commit();
@@ -34,9 +36,14 @@ class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
   @override
   Future<List<ExpenseModel>> fetchExpenses(String userId) async {
     try {
-      final snapshot = await _collection(userId).get();
+      final QuerySnapshot<Map<String, dynamic>> snapshot = await _collection(
+        userId,
+      ).get();
       return snapshot.docs
-          .map((doc) => ExpenseModel.fromFirestore(doc.data()))
+          .map(
+            (QueryDocumentSnapshot<Map<String, dynamic>> doc) =>
+                ExpenseModel.fromFirestore(doc.data()),
+          )
           .toList();
     } catch (e) {
       throw SyncException(message: 'Failed to fetch remote expenses: $e');

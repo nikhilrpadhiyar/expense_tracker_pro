@@ -1,6 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
@@ -10,6 +7,9 @@ import 'package:expense_tracker_pro/core/utils/date_utils.dart';
 import 'package:expense_tracker_pro/features/reports/presentation/controllers/reports_controller.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_empty_widget.dart';
 import 'package:expense_tracker_pro/shared/widgets/section_header.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ReportsPage extends GetView<ReportsController> {
   const ReportsPage({super.key});
@@ -19,7 +19,7 @@ class ReportsPage extends GetView<ReportsController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
-        actions: [
+        actions: <Widget>[
           Obx(
             () => PopupMenuButton<String>(
               icon: controller.isExporting.value
@@ -28,12 +28,12 @@ class ReportsPage extends GetView<ReportsController> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.download_rounded),
-              onSelected: (v) {
+              onSelected: (String v) {
                 if (v == 'csv') controller.exportCsv();
                 if (v == 'pdf') controller.exportPdf();
               },
-              itemBuilder: (_) => [
-                const PopupMenuItem(
+              itemBuilder: (_) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
                   value: 'csv',
                   child: ListTile(
                     leading: Icon(Icons.table_chart_outlined),
@@ -41,7 +41,7 @@ class ReportsPage extends GetView<ReportsController> {
                     contentPadding: EdgeInsets.zero,
                   ),
                 ),
-                const PopupMenuItem(
+                const PopupMenuItem<String>(
                   value: 'pdf',
                   child: ListTile(
                     leading: Icon(Icons.picture_as_pdf_outlined),
@@ -67,7 +67,7 @@ class ReportsPage extends GetView<ReportsController> {
         }
         return ListView(
           padding: AppSpacing.screenPadding,
-          children: [
+          children: <Widget>[
             _MonthSelector(controller: controller),
             const SizedBox(height: AppSpacing.md),
             _SummaryRow(controller: controller),
@@ -90,11 +90,11 @@ class _MonthSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: <Widget>[
         IconButton(
           icon: const Icon(Icons.chevron_left_rounded),
           onPressed: () {
-            final m = controller.selectedMonth.value;
+            final DateTime m = controller.selectedMonth.value;
             controller.changeMonth(DateTime(m.year, m.month - 1));
           },
         ),
@@ -107,7 +107,7 @@ class _MonthSelector extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.chevron_right_rounded),
           onPressed: () {
-            final m = controller.selectedMonth.value;
+            final DateTime m = controller.selectedMonth.value;
             if (!AppDateUtils.isSameMonth(m, DateTime.now())) {
               controller.changeMonth(DateTime(m.year, m.month + 1));
             }
@@ -125,7 +125,7 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: <Widget>[
         _SummaryCard(
           label: 'Income',
           amount: controller.totalIncome,
@@ -175,7 +175,7 @@ class _SummaryCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Icon(icon, color: color, size: 18),
               const SizedBox(height: 8),
               Text(
@@ -202,18 +202,22 @@ class _BarChartCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totals = controller.categoryTotals;
+    final Map<String, double> totals = controller.categoryTotals;
     if (totals.isEmpty) return const SizedBox.shrink();
 
-    final entries = totals.entries.take(6).toList();
-    final maxVal = entries.map((e) => e.value).reduce((a, b) => a > b ? a : b);
+    final List<MapEntry<String, double>> entries = totals.entries
+        .take(6)
+        .toList();
+    final double maxVal = entries
+        .map((MapEntry<String, double> e) => e.value)
+        .reduce((double a, double b) => a > b ? a : b);
 
     return Card(
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             const SectionHeader(title: 'Top Spending Categories'),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
@@ -221,11 +225,15 @@ class _BarChartCard extends StatelessWidget {
               child: BarChart(
                 BarChartData(
                   maxY: maxVal * 1.2,
-                  barGroups: entries.asMap().entries.map((e) {
-                    final cat = ExpenseCategories.findById(e.value.key);
+                  barGroups: entries.asMap().entries.map((
+                    MapEntry<int, MapEntry<String, double>> e,
+                  ) {
+                    final ExpenseCategory cat = ExpenseCategories.findById(
+                      e.value.key,
+                    );
                     return BarChartGroupData(
                       x: e.key,
-                      barRods: [
+                      barRods: <BarChartRodData>[
                         BarChartRodData(
                           toY: e.value.value,
                           color: cat.color,
@@ -252,15 +260,14 @@ class _BarChartCard extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        getTitlesWidget: (v, _) {
-                          final idx = v.toInt();
+                        getTitlesWidget: (double v, _) {
+                          final int idx = v.toInt();
                           if (idx >= entries.length) return const SizedBox();
-                          final cat =
+                          final ExpenseCategory cat =
                               ExpenseCategories.findById(entries[idx].key);
                           return Padding(
                             padding: const EdgeInsets.only(top: 4),
-                            child: Icon(cat.icon,
-                                size: 14, color: cat.color),
+                            child: Icon(cat.icon, size: 14, color: cat.color),
                           );
                         },
                       ),
@@ -282,24 +289,24 @@ class _CategoryBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totals = controller.categoryTotals;
-    final total = totals.values.fold(0.0, (s, v) => s + v);
+    final Map<String, double> totals = controller.categoryTotals;
+    final double total = totals.values.fold(0.0, (double s, double v) => s + v);
 
     return Card(
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             const SectionHeader(title: 'Category Breakdown'),
             const SizedBox(height: AppSpacing.sm),
-            ...totals.entries.map((entry) {
-              final cat = ExpenseCategories.findById(entry.key);
-              final pct = total > 0 ? entry.value / total : 0.0;
+            ...totals.entries.map((MapEntry<String, double> entry) {
+              final ExpenseCategory cat = ExpenseCategories.findById(entry.key);
+              final double pct = total > 0 ? entry.value / total : 0.0;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     Container(
                       width: 32,
                       height: 32,
@@ -313,12 +320,14 @@ class _CategoryBreakdown extends StatelessWidget {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(cat.name,
-                                  style: context.textTheme.bodyMedium),
+                            children: <Widget>[
+                              Text(
+                                cat.name,
+                                style: context.textTheme.bodyMedium,
+                              ),
                               Text(
                                 CurrencyFormatter.format(entry.value),
                                 style: AppTextStyles.labelLarge,

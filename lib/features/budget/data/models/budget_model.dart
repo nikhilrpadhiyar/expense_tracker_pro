@@ -1,10 +1,17 @@
-import 'package:hive/hive.dart';
 import 'package:expense_tracker_pro/features/budget/domain/entities/budget_entity.dart';
+import 'package:hive/hive.dart';
 
 part 'budget_model.g.dart';
 
 @HiveType(typeId: 1)
 class BudgetModel extends HiveObject {
+  factory BudgetModel.fromEntity(BudgetEntity entity) => BudgetModel(
+    id: entity.id,
+    categoryId: entity.categoryId,
+    limit: entity.limit,
+    month: entity.month,
+    year: entity.year,
+  );
   BudgetModel({
     required this.id,
     required this.categoryId,
@@ -28,20 +35,12 @@ class BudgetModel extends HiveObject {
   @HiveField(4)
   final int year;
 
-  factory BudgetModel.fromEntity(BudgetEntity entity) => BudgetModel(
-        id: entity.id,
-        categoryId: entity.categoryId,
-        limit: entity.limit,
-        month: entity.month,
-        year: entity.year,
-      );
-
   BudgetEntity toEntity({double spent = 0}) => BudgetEntity(
-        id: id,
-        categoryId: categoryId,
-        limit: limit,
-        month: month,
-        year: year,
-        spent: spent,
-      );
+    id: id,
+    categoryId: categoryId,
+    limit: limit,
+    month: month,
+    year: year,
+    spent: spent,
+  );
 }

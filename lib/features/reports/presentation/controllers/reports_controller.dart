@@ -1,25 +1,27 @@
-import 'package:get/get.dart';
+import 'package:dartz/dartz.dart';
+import 'package:expense_tracker_pro/core/error/failures.dart';
 import 'package:expense_tracker_pro/core/services/export_service.dart';
 import 'package:expense_tracker_pro/core/utils/date_utils.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
 import 'package:expense_tracker_pro/features/expense/domain/usecases/get_expenses_usecase.dart';
+import 'package:get/get.dart';
 
 class ReportsController extends GetxController {
   ReportsController(this._getExpenses);
   final GetExpensesUseCase _getExpenses;
 
-  final expenses = <ExpenseEntity>[].obs;
-  final isLoading = false.obs;
-  final isExporting = false.obs;
-  final selectedMonth = DateTime.now().obs;
+  final RxList<ExpenseEntity> expenses = <ExpenseEntity>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isExporting = false.obs;
+  final Rx<DateTime> selectedMonth = DateTime.now().obs;
 
   double get totalIncome => expenses
-      .where((e) => e.isIncome)
-      .fold(0, (s, e) => s + e.amount);
+      .where((ExpenseEntity e) => e.isIncome)
+      .fold(0, (double s, ExpenseEntity e) => s + e.amount);
 
   double get totalExpense => expenses
-      .where((e) => e.isExpense)
-      .fold(0, (s, e) => s + e.amount);
+      .where((ExpenseEntity e) => e.isExpense)
+      .fold(0, (double s, ExpenseEntity e) => s + e.amount);
 
   double get savingsRate {
     if (totalIncome == 0) return 0;
@@ -27,12 +29,17 @@ class ReportsController extends GetxController {
   }
 
   Map<String, double> get categoryTotals {
-    final totals = <String, double>{};
-    for (final e in expenses.where((e) => e.isExpense)) {
+    final Map<String, double> totals = <String, double>{};
+    for (final ExpenseEntity e in expenses.where(
+      (ExpenseEntity e) => e.isExpense,
+    )) {
       totals[e.categoryId] = (totals[e.categoryId] ?? 0) + e.amount;
     }
-    return Map.fromEntries(
-      totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value)),
+    return Map<String, double>.fromEntries(
+      totals.entries.toList()..sort(
+        (MapEntry<String, double> a, MapEntry<String, double> b) =>
+            b.value.compareTo(a.value),
+      ),
     );
   }
 
@@ -44,14 +51,14 @@ class ReportsController extends GetxController {
 
   Future<void> loadReport() async {
     isLoading.value = true;
-    final month = selectedMonth.value;
-    final result = await _getExpenses(
+    final DateTime month = selectedMonth.value;
+    final Either<Failure, List<ExpenseEntity>> result = await _getExpenses(
       from: AppDateUtils.startOfMonthFor(month.year, month.month),
       to: AppDateUtils.endOfMonthFor(month.year, month.month),
     );
     result.fold(
-      (f) => Get.snackbar('Error', f.message),
-      (list) => expenses.assignAll(list),
+      (Failure f) => Get.snackbar('Error', f.message),
+      (List<ExpenseEntity> list) => expenses.assignAll(list),
     );
     isLoading.value = false;
   }

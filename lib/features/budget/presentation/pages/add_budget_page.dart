@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
-import 'package:expense_tracker_pro/core/theme/app_colors.dart';
-import 'package:expense_tracker_pro/core/theme/app_text_styles.dart';
 import 'package:expense_tracker_pro/core/utils/validators.dart';
 import 'package:expense_tracker_pro/features/budget/presentation/controllers/budget_controller.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_button.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddBudgetPage extends GetView<BudgetController> {
   const AddBudgetPage({super.key});
@@ -23,12 +21,12 @@ class AddBudgetPage extends GetView<BudgetController> {
             key: controller.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Text('Category', style: context.textTheme.labelLarge),
                 const SizedBox(height: AppSpacing.sm),
                 Obx(
                   () => DropdownButtonFormField<String>(
-                    value: controller.selectedCategory.value,
+                    initialValue: controller.selectedCategory.value,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -36,10 +34,10 @@ class AddBudgetPage extends GetView<BudgetController> {
                     ),
                     items: ExpenseCategories.all
                         .map(
-                          (cat) => DropdownMenuItem(
+                          (ExpenseCategory cat) => DropdownMenuItem<String>(
                             value: cat.id,
                             child: Row(
-                              children: [
+                              children: <Widget>[
                                 Icon(cat.icon, color: cat.color, size: 18),
                                 const SizedBox(width: 8),
                                 Text(cat.name),
@@ -48,7 +46,8 @@ class AddBudgetPage extends GetView<BudgetController> {
                           ),
                         )
                         .toList(),
-                    onChanged: (v) => controller.selectedCategory.value = v!,
+                    onChanged: (String? v) =>
+                        controller.selectedCategory.value = v!,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -56,7 +55,9 @@ class AddBudgetPage extends GetView<BudgetController> {
                   controller: controller.limitController,
                   label: 'Monthly Limit',
                   hint: '0.00',
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   validator: Validators.amount,
                   prefixIcon: Icons.attach_money_rounded,
                 ),

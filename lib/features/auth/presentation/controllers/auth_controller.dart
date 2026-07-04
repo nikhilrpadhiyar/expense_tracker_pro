@@ -1,24 +1,24 @@
+import 'package:expense_tracker_pro/routes/app_pages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:expense_tracker_pro/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   AuthController(this._auth);
   final FirebaseAuth _auth;
 
-  final isLoading = false.obs;
-  final isPasswordVisible = false.obs;
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final nameController = TextEditingController();
-  final loginFormKey = GlobalKey<FormState>();
-  final registerFormKey = GlobalKey<FormState>();
+  final RxBool isLoading = false.obs;
+  final RxBool isPasswordVisible = false.obs;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
 
   @override
   void onInit() {
     super.onInit();
-    _auth.authStateChanges().listen((user) {
+    _auth.authStateChanges().listen((User? user) {
       if (user != null) {
         Get.offAllNamed(AppRoutes.main);
       } else {
@@ -51,10 +51,11 @@ class AuthController extends GetxController {
     if (!registerFormKey.currentState!.validate()) return;
     isLoading.value = true;
     try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-      );
+      final UserCredential credential = await _auth
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text,
+          );
       await credential.user?.updateDisplayName(nameController.text.trim());
     } on FirebaseAuthException catch (e) {
       _showError(e.message ?? 'Registration failed.');

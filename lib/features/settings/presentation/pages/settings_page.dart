@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/features/settings/presentation/controllers/settings_controller.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_logo.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
@@ -14,7 +14,7 @@ class SettingsPage extends GetView<SettingsController> {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         padding: AppSpacing.screenPadding,
-        children: [
+        children: <Widget>[
           _SectionLabel('Appearance'),
           Obx(
             () => SwitchListTile(
@@ -29,12 +29,12 @@ class SettingsPage extends GetView<SettingsController> {
           _SectionLabel('Currency'),
           Obx(
             () => Column(
-              children: controller.currencies.map((c) {
+              children: controller.currencies.map((String c) {
                 return RadioListTile<String>(
                   title: Text(c),
                   value: c,
                   groupValue: controller.selectedCurrency.value,
-                  onChanged: (v) => controller.setCurrency(v!),
+                  onChanged: (String? v) => controller.setCurrency(v!),
                 );
               }).toList(),
             ),
@@ -64,17 +64,14 @@ class SettingsPage extends GetView<SettingsController> {
           const SizedBox(height: AppSpacing.lg),
           Center(
             child: Column(
-              children: [
+              children: <Widget>[
                 const AppLogo(size: 40),
                 const SizedBox(height: 8),
                 Text(
                   'Expense Tracker Pro',
                   style: context.textTheme.titleMedium,
                 ),
-                Text(
-                  'Version 1.0.0',
-                  style: context.textTheme.bodySmall,
-                ),
+                Text('Version 1.0.0', style: context.textTheme.bodySmall),
               ],
             ),
           ),

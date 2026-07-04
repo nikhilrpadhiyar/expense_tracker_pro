@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
@@ -10,6 +8,8 @@ import 'package:expense_tracker_pro/features/expense/domain/entities/expense_ent
 import 'package:expense_tracker_pro/features/expense/presentation/controllers/expense_controller.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_button.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddExpensePage extends GetView<ExpenseController> {
   const AddExpensePage({super.key});
@@ -17,10 +17,7 @@ class AddExpensePage extends GetView<ExpenseController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Transaction'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Add Transaction'), centerTitle: true),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppSpacing.screenPadding,
@@ -28,7 +25,7 @@ class AddExpensePage extends GetView<ExpenseController> {
             key: controller.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 // Type toggle
                 Obx(
                   () => _TypeToggle(
@@ -43,7 +40,9 @@ class AddExpensePage extends GetView<ExpenseController> {
                   controller: controller.amountController,
                   label: 'Amount',
                   hint: '0.00',
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   validator: Validators.amount,
                   prefixIcon: Icons.attach_money_rounded,
                 ),
@@ -54,7 +53,8 @@ class AddExpensePage extends GetView<ExpenseController> {
                   controller: controller.titleController,
                   label: 'Title',
                   hint: 'e.g. Lunch at restaurant',
-                  validator: (v) => Validators.required(v, field: 'Title'),
+                  validator: (String? v) =>
+                      Validators.required(v, field: 'Title'),
                   prefixIcon: Icons.title_rounded,
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -62,10 +62,12 @@ class AddExpensePage extends GetView<ExpenseController> {
                 // Category
                 Text('Category', style: context.textTheme.labelLarge),
                 const SizedBox(height: AppSpacing.sm),
-                Obx(() => _CategoryGrid(
-                      selected: controller.selectedCategory.value,
-                      onSelect: controller.setCategory,
-                    )),
+                Obx(
+                  () => _CategoryGrid(
+                    selected: controller.selectedCategory.value,
+                    onSelect: controller.setCategory,
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.md),
 
                 // Date
@@ -118,9 +120,9 @@ class _TypeToggle extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: ExpenseType.values.map((type) {
-          final isSelected = selected == type;
-          final isExpense = type == ExpenseType.expense;
+        children: ExpenseType.values.map((ExpenseType type) {
+          final bool isSelected = selected == type;
+          final bool isExpense = type == ExpenseType.expense;
           return Expanded(
             child: GestureDetector(
               onTap: () => onChanged(type),
@@ -159,16 +161,17 @@ class _CategoryGrid extends StatelessWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: ExpenseCategories.all.map((cat) {
-        final isSelected = selected == cat.id;
+      children: ExpenseCategories.all.map((ExpenseCategory cat) {
+        final bool isSelected = selected == cat.id;
         return GestureDetector(
           onTap: () => onSelect(cat.id),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color:
-                  isSelected ? cat.color.withAlpha(30) : context.theme.cardColor,
+              color: isSelected
+                  ? cat.color.withAlpha(30)
+                  : context.theme.cardColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected ? cat.color : Colors.transparent,
@@ -176,7 +179,7 @@ class _CategoryGrid extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 Icon(cat.icon, size: 16, color: cat.color),
                 const SizedBox(width: 6),
                 Text(
@@ -203,7 +206,7 @@ class _DatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final picked = await showDatePicker(
+        final DateTime? picked = await showDatePicker(
           context: context,
           initialDate: date,
           firstDate: DateTime(2020),
@@ -219,9 +222,12 @@ class _DatePicker extends StatelessWidget {
           border: Border.all(color: AppColors.grey200),
         ),
         child: Row(
-          children: [
-            const Icon(Icons.calendar_today_rounded,
-                size: 18, color: AppColors.grey500),
+          children: <Widget>[
+            const Icon(
+              Icons.calendar_today_rounded,
+              size: 18,
+              color: AppColors.grey500,
+            ),
             const SizedBox(width: 12),
             Text(
               AppDateUtils.formatDate(date),

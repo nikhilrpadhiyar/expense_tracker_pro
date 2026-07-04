@@ -1,20 +1,23 @@
+import 'package:expense_tracker_pro/core/constants/app_constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:expense_tracker_pro/core/constants/app_constants.dart';
 
 class NotificationService {
   NotificationService._();
 
   static final NotificationService instance = NotificationService._();
 
-  final _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
     tz.initializeTimeZones();
 
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings(
+    const AndroidInitializationSettings android = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    const DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
@@ -30,7 +33,7 @@ class NotificationService {
     required double spent,
     required double budget,
   }) async {
-    final percent = ((spent / budget) * 100).toStringAsFixed(0);
+    final String percent = ((spent / budget) * 100).toStringAsFixed(0);
     await _plugin.show(
       AppConstants.notifBudgetAlert,
       'Budget Alert: $categoryName',
@@ -40,8 +43,8 @@ class NotificationService {
   }
 
   Future<void> scheduleMonthlySummary() async {
-    final now = tz.TZDateTime.now(tz.local);
-    final firstOfNextMonth = tz.TZDateTime(
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    final tz.TZDateTime firstOfNextMonth = tz.TZDateTime(
       tz.local,
       now.month == 12 ? now.year + 1 : now.year,
       now.month == 12 ? 1 : now.month + 1,
@@ -55,6 +58,8 @@ class NotificationService {
       firstOfNextMonth,
       _details('monthly_summary', 'Monthly Summary'),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

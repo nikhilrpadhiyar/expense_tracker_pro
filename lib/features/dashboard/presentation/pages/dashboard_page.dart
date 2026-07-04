@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
-import 'package:expense_tracker_pro/core/utils/currency_formatter.dart';
 import 'package:expense_tracker_pro/core/utils/date_utils.dart';
 import 'package:expense_tracker_pro/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:expense_tracker_pro/features/dashboard/presentation/widgets/balance_card.dart';
@@ -10,6 +7,8 @@ import 'package:expense_tracker_pro/features/dashboard/presentation/widgets/expe
 import 'package:expense_tracker_pro/features/dashboard/presentation/widgets/spending_chart.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_empty_widget.dart';
 import 'package:expense_tracker_pro/shared/widgets/section_header.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DashboardPage extends GetView<DashboardController> {
   const DashboardPage({super.key});
@@ -25,10 +24,8 @@ class DashboardPage extends GetView<DashboardController> {
           return RefreshIndicator(
             onRefresh: controller.loadExpenses,
             child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: _Header(controller: controller),
-                ),
+              slivers: <Widget>[
+                SliverToBoxAdapter(child: _Header(controller: controller)),
                 SliverToBoxAdapter(
                   child: BalanceCard(
                     balance: controller.balance,
@@ -36,7 +33,7 @@ class DashboardPage extends GetView<DashboardController> {
                     expense: controller.totalExpense,
                   ),
                 ),
-                if (controller.expenses.isNotEmpty) ...[
+                if (controller.expenses.isNotEmpty) ...<Widget>[
                   SliverToBoxAdapter(
                     child: SpendingChart(expenses: controller.expenses),
                   ),
@@ -63,7 +60,7 @@ class DashboardPage extends GetView<DashboardController> {
                 else
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
-                      (_, i) => ExpenseListTile(
+                      (_, int i) => ExpenseListTile(
                         expense: controller.recentExpenses[i],
                       ),
                       childCount: controller.recentExpenses.length,
@@ -94,18 +91,20 @@ class _Header extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Text(
                 'Hello, ${controller.userName} 👋',
                 style: context.textTheme.titleMedium,
               ),
-              Obx(() => Text(
-                    AppDateUtils.formatMonthYear(controller.selectedMonth.value),
-                    style: context.textTheme.headlineMedium,
-                  )),
+              Obx(
+                () => Text(
+                  AppDateUtils.formatMonthYear(controller.selectedMonth.value),
+                  style: context.textTheme.headlineMedium,
+                ),
+              ),
             ],
           ),
           CircleAvatar(

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
 
 class AppEmptyWidget extends StatelessWidget {
   const AppEmptyWidget({
@@ -21,7 +21,7 @@ class AppEmptyWidget extends StatelessWidget {
         padding: AppSpacing.screenPadding,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             Icon(icon, size: 72, color: AppColors.grey400),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -29,7 +29,7 @@ class AppEmptyWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
-            if (subtitle != null) ...[
+            if (subtitle != null) ...<Widget>[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 subtitle!,

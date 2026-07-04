@@ -1,10 +1,35 @@
-import 'package:hive/hive.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
+import 'package:hive/hive.dart';
 
 part 'expense_model.g.dart';
 
 @HiveType(typeId: 0)
 class ExpenseModel extends HiveObject {
+  factory ExpenseModel.fromEntity(ExpenseEntity entity) => ExpenseModel(
+    id: entity.id,
+    title: entity.title,
+    amount: entity.amount,
+    categoryId: entity.categoryId,
+    date: entity.date,
+    typeIndex: entity.type.index,
+    note: entity.note,
+    receiptUrl: entity.receiptUrl,
+    isSynced: entity.isSynced,
+    userId: entity.userId,
+  );
+
+  factory ExpenseModel.fromFirestore(Map<String, dynamic> json) => ExpenseModel(
+    id: json['id'] as String,
+    title: json['title'] as String,
+    amount: (json['amount'] as num).toDouble(),
+    categoryId: json['categoryId'] as String,
+    date: DateTime.parse(json['date'] as String),
+    typeIndex: json['typeIndex'] as int,
+    note: json['note'] as String?,
+    receiptUrl: json['receiptUrl'] as String?,
+    isSynced: true,
+    userId: json['userId'] as String?,
+  );
   ExpenseModel({
     required this.id,
     required this.title,
@@ -50,56 +75,29 @@ class ExpenseModel extends HiveObject {
 
   ExpenseType get type => ExpenseType.values[typeIndex];
 
-  factory ExpenseModel.fromEntity(ExpenseEntity entity) => ExpenseModel(
-        id: entity.id,
-        title: entity.title,
-        amount: entity.amount,
-        categoryId: entity.categoryId,
-        date: entity.date,
-        typeIndex: entity.type.index,
-        note: entity.note,
-        receiptUrl: entity.receiptUrl,
-        isSynced: entity.isSynced,
-        userId: entity.userId,
-      );
-
   ExpenseEntity toEntity() => ExpenseEntity(
-        id: id,
-        title: title,
-        amount: amount,
-        categoryId: categoryId,
-        date: date,
-        type: type,
-        note: note,
-        receiptUrl: receiptUrl,
-        isSynced: isSynced,
-        userId: userId,
-      );
+    id: id,
+    title: title,
+    amount: amount,
+    categoryId: categoryId,
+    date: date,
+    type: type,
+    note: note,
+    receiptUrl: receiptUrl,
+    isSynced: isSynced,
+    userId: userId,
+  );
 
-  Map<String, dynamic> toFirestore() => {
-        'id': id,
-        'title': title,
-        'amount': amount,
-        'categoryId': categoryId,
-        'date': date.toIso8601String(),
-        'typeIndex': typeIndex,
-        'note': note,
-        'receiptUrl': receiptUrl,
-        'userId': userId,
-        'isSynced': true,
-      };
-
-  factory ExpenseModel.fromFirestore(Map<String, dynamic> json) =>
-      ExpenseModel(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        amount: (json['amount'] as num).toDouble(),
-        categoryId: json['categoryId'] as String,
-        date: DateTime.parse(json['date'] as String),
-        typeIndex: json['typeIndex'] as int,
-        note: json['note'] as String?,
-        receiptUrl: json['receiptUrl'] as String?,
-        isSynced: true,
-        userId: json['userId'] as String?,
-      );
+  Map<String, dynamic> toFirestore() => <String, dynamic>{
+    'id': id,
+    'title': title,
+    'amount': amount,
+    'categoryId': categoryId,
+    'date': date.toIso8601String(),
+    'typeIndex': typeIndex,
+    'note': note,
+    'receiptUrl': receiptUrl,
+    'userId': userId,
+    'isSynced': true,
+  };
 }

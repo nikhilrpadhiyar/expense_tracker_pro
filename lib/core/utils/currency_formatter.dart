@@ -12,7 +12,7 @@ class CurrencyFormatter {
   }
 
   static String formatCompact(double amount, {String currency = 'USD'}) {
-    final symbol = _symbol(currency);
+    final String symbol = _symbol(currency);
     if (amount >= 1000000) {
       return '$symbol${(amount / 1000000).toStringAsFixed(1)}M';
     }
@@ -23,7 +23,7 @@ class CurrencyFormatter {
   }
 
   static String _symbol(String currency) {
-    const symbols = {
+    const Map<String, String> symbols = <String, String>{
       'USD': '\$',
       'EUR': '€',
       'GBP': '£',

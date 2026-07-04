@@ -1,22 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/features/budget/presentation/pages/budget_list_page.dart';
 import 'package:expense_tracker_pro/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:expense_tracker_pro/features/expense/presentation/controllers/expense_controller.dart';
-import 'package:expense_tracker_pro/features/expense/presentation/pages/add_expense_page.dart';
 import 'package:expense_tracker_pro/features/reports/presentation/pages/reports_page.dart';
 import 'package:expense_tracker_pro/features/settings/presentation/pages/settings_page.dart';
 import 'package:expense_tracker_pro/routes/app_pages.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MainScaffold extends StatelessWidget {
   const MainScaffold({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final navIndex = 0.obs;
+    final RxInt navIndex = 0.obs;
 
-    final pages = [
+    final List<StatelessWidget> pages = <StatelessWidget>[
       const DashboardPage(),
       const BudgetListPage(),
       const ReportsPage(),
@@ -29,14 +27,6 @@ class MainScaffold extends StatelessWidget {
         floatingActionButton: navIndex.value == 0
             ? FloatingActionButton.extended(
                 onPressed: () {
-                  if (Get.isRegistered<ExpenseController>()) {
-                    Get.find<ExpenseController>().populateForEdit(
-                      // reset form by navigating to fresh add page
-                      Get.find<ExpenseController>().titleController.clear != null
-                          ? throw UnimplementedError()
-                          : throw UnimplementedError(),
-                    );
-                  }
                   Get.toNamed(AppRoutes.addExpense);
                 },
                 icon: const Icon(Icons.add_rounded),
@@ -48,8 +38,8 @@ class MainScaffold extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: navIndex.value,
-          onTap: (i) => navIndex.value = i,
-          items: const [
+          onTap: (int i) => navIndex.value = i,
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_outlined),
               activeIcon: Icon(Icons.dashboard_rounded),

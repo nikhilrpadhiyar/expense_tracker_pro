@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/core/utils/validators.dart';
@@ -8,6 +6,8 @@ import 'package:expense_tracker_pro/routes/app_pages.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_button.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_logo.dart';
 import 'package:expense_tracker_pro/shared/widgets/app_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends GetView<AuthController> {
   const LoginPage({super.key});
@@ -22,14 +22,11 @@ class LoginPage extends GetView<AuthController> {
             key: controller.loginFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const SizedBox(height: AppSpacing.xxl),
                 const Center(child: AppLogo()),
                 const SizedBox(height: AppSpacing.xl),
-                Text(
-                  'Welcome back',
-                  style: context.textTheme.headlineLarge,
-                ),
+                Text('Welcome back', style: context.textTheme.headlineLarge),
                 const SizedBox(height: 4),
                 Text(
                   'Sign in to continue tracking your expenses',
@@ -76,7 +73,7 @@ class LoginPage extends GetView<AuthController> {
                 const SizedBox(height: AppSpacing.lg),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: <Widget>[
                     Text(
                       "Don't have an account?",
                       style: context.textTheme.bodyMedium,

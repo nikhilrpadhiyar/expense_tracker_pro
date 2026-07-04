@@ -17,7 +17,7 @@ class ExpenseCategory {
 class ExpenseCategories {
   ExpenseCategories._();
 
-  static const List<ExpenseCategory> all = [
+  static const List<ExpenseCategory> all = <ExpenseCategory>[
     ExpenseCategory(
       id: 'food',
       name: 'Food & Dining',
@@ -81,5 +81,5 @@ class ExpenseCategories {
   ];
 
   static ExpenseCategory findById(String id) =>
-      all.firstWhere((c) => c.id == id, orElse: () => all.last);
+      all.firstWhere((ExpenseCategory c) => c.id == id, orElse: () => all.last);
 }

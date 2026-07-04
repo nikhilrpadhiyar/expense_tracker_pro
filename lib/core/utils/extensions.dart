@@ -16,17 +16,18 @@ extension NumX on num {
 
 extension DoubleX on double {
   /// Returns positive value as expense-formatted string.
-  String toSignedString() => this >= 0 ? '+${toStringAsFixed(2)}' : toStringAsFixed(2);
+  String toSignedString() =>
+      this >= 0 ? '+${toStringAsFixed(2)}' : toStringAsFixed(2);
 }
 
 extension DateTimeX on DateTime {
   bool get isToday {
-    final now = DateTime.now();
+    final DateTime now = DateTime.now();
     return year == now.year && month == now.month && day == now.day;
   }
 
   bool get isYesterday {
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
     return year == yesterday.year &&
         month == yesterday.month &&
         day == yesterday.day;

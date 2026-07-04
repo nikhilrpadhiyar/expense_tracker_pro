@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/core/theme/app_text_styles.dart';
 import 'package:expense_tracker_pro/core/utils/currency_formatter.dart';
+import 'package:flutter/material.dart';
 
 class BalanceCard extends StatelessWidget {
   const BalanceCard({
@@ -23,12 +23,12 @@ class BalanceCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryDark],
+          colors: <Color>[AppColors.primary, AppColors.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: AppColors.primary.withAlpha(80),
             blurRadius: 20,
@@ -38,7 +38,7 @@ class BalanceCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Text(
             'Total Balance',
             style: AppTextStyles.bodyMedium.copyWith(
@@ -52,7 +52,7 @@ class BalanceCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Row(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: _StatItem(
                   label: 'Income',
@@ -100,7 +100,7 @@ class _StatItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: [
+        children: <Widget>[
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class _StatItem extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Text(
                   label,
                   style: AppTextStyles.labelSmall.copyWith(

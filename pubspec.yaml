@@ -37,7 +37,7 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.1
   csv: ^6.0.0
-  share_plus: ^10.1.2
+  share_plus: ^13.2.0
   path_provider: ^2.1.4
 
   # Notifications
@@ -59,7 +59,7 @@ dependencies:
   logger: ^2.4.0
   uuid: ^4.5.1
   flutter_dotenv: ^5.2.1
-  package_info_plus: ^8.1.0
+  package_info_plus: ^10.2.0
   permission_handler: ^11.3.1
 
 dev_dependencies:

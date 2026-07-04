@@ -3,7 +3,7 @@ class Validators {
 
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) return 'Email is required.';
-    final regex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final RegExp regex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!regex.hasMatch(value.trim())) return 'Enter a valid email.';
     return null;
   }
@@ -21,7 +21,7 @@ class Validators {
 
   static String? amount(String? value) {
     if (value == null || value.trim().isEmpty) return 'Amount is required.';
-    final parsed = double.tryParse(value.trim());
+    final double? parsed = double.tryParse(value.trim());
     if (parsed == null) return 'Enter a valid amount.';
     if (parsed <= 0) return 'Amount must be greater than zero.';
     return null;

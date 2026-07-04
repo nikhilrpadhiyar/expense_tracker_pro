@@ -1,12 +1,11 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:expense_tracker_pro/core/constants/app_spacing.dart';
 import 'package:expense_tracker_pro/core/constants/expense_categories.dart';
 import 'package:expense_tracker_pro/core/theme/app_colors.dart';
 import 'package:expense_tracker_pro/core/theme/app_text_styles.dart';
-import 'package:expense_tracker_pro/core/utils/currency_formatter.dart';
 import 'package:expense_tracker_pro/features/expense/domain/entities/expense_entity.dart';
 import 'package:expense_tracker_pro/shared/widgets/section_header.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class SpendingChart extends StatelessWidget {
   const SpendingChart({super.key, required this.expenses});
@@ -14,24 +13,31 @@ class SpendingChart extends StatelessWidget {
   final List<ExpenseEntity> expenses;
 
   Map<String, double> get _categoryTotals {
-    final totals = <String, double>{};
-    for (final e in expenses.where((e) => e.isExpense)) {
+    final Map<String, double> totals = <String, double>{};
+    for (final ExpenseEntity e in expenses.where(
+      (ExpenseEntity e) => e.isExpense,
+    )) {
       totals[e.categoryId] = (totals[e.categoryId] ?? 0) + e.amount;
     }
-    return Map.fromEntries(
-      totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value)),
+    return Map<String, double>.fromEntries(
+      totals.entries.toList()..sort(
+        (MapEntry<String, double> a, MapEntry<String, double> b) =>
+            b.value.compareTo(a.value),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final totals = _categoryTotals;
+    final Map<String, double> totals = _categoryTotals;
     if (totals.isEmpty) return const SizedBox.shrink();
 
-    final total = totals.values.fold(0.0, (s, v) => s + v);
-    final sections = totals.entries.map((entry) {
-      final cat = ExpenseCategories.findById(entry.key);
-      final pct = total > 0 ? (entry.value / total * 100) : 0.0;
+    final double total = totals.values.fold(0.0, (double s, double v) => s + v);
+    final List<PieChartSectionData> sections = totals.entries.map((
+      MapEntry<String, double> entry,
+    ) {
+      final ExpenseCategory cat = ExpenseCategories.findById(entry.key);
+      final double pct = total > 0 ? (entry.value / total * 100) : 0.0;
       return PieChartSectionData(
         value: entry.value,
         color: cat.color,
@@ -51,13 +57,13 @@ class SpendingChart extends StatelessWidget {
         padding: AppSpacing.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             const SectionHeader(title: 'Spending by Category'),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
               height: 200,
               child: Row(
-                children: [
+                children: <Widget>[
                   Expanded(
                     child: PieChart(
                       PieChartData(
@@ -71,12 +77,16 @@ class SpendingChart extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: totals.entries.take(5).map((entry) {
-                      final cat = ExpenseCategories.findById(entry.key);
+                    children: totals.entries.take(5).map((
+                      MapEntry<String, double> entry,
+                    ) {
+                      final ExpenseCategory cat = ExpenseCategories.findById(
+                        entry.key,
+                      );
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Row(
-                          children: [
+                          children: <Widget>[
                             Container(
                               width: 10,
                               height: 10,

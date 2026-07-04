@@ -1,11 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expense_tracker_pro/core/constants/app_constants.dart';
 import 'package:expense_tracker_pro/core/services/notification_service.dart';
 import 'package:expense_tracker_pro/core/theme/app_theme.dart';
@@ -15,11 +7,19 @@ import 'package:expense_tracker_pro/features/expense/data/datasources/expense_lo
 import 'package:expense_tracker_pro/features/expense/data/models/expense_model.dart';
 import 'package:expense_tracker_pro/firebase_options.dart';
 import 'package:expense_tracker_pro/routes/app_pages.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -38,18 +38,18 @@ Future<void> main() async {
   await GetStorage.init();
 
   // Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Notifications
   await NotificationService.instance.init();
   await NotificationService.instance.scheduleMonthlySummary();
 
   // Restore saved theme
-  final box = GetStorage();
-  final savedTheme = box.read<String>(AppConstants.keyThemeMode);
-  final themeMode = savedTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
+  final GetStorage box = GetStorage();
+  final String? savedTheme = box.read<String>(AppConstants.keyThemeMode);
+  final ThemeMode themeMode = savedTheme == 'dark'
+      ? ThemeMode.dark
+      : ThemeMode.light;
 
   runApp(ExpenseTrackerApp(themeMode: themeMode));
 }
@@ -66,12 +66,12 @@ class ExpenseTrackerApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      localizationsDelegates: const [
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en')],
+      supportedLocales: const <Locale>[Locale('en')],
       initialRoute: AppPages.initial,
       getPages: AppPages.pages,
       defaultTransition: Transition.cupertino,

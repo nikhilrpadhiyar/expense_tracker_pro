@@ -29,16 +29,15 @@ class BudgetEntity extends Equatable {
     int? month,
     int? year,
     double? spent,
-  }) =>
-      BudgetEntity(
-        id: id ?? this.id,
-        categoryId: categoryId ?? this.categoryId,
-        limit: limit ?? this.limit,
-        month: month ?? this.month,
-        year: year ?? this.year,
-        spent: spent ?? this.spent,
-      );
+  }) => BudgetEntity(
+    id: id ?? this.id,
+    categoryId: categoryId ?? this.categoryId,
+    limit: limit ?? this.limit,
+    month: month ?? this.month,
+    year: year ?? this.year,
+    spent: spent ?? this.spent,
+  );
 
   @override
-  List<Object> get props => [id, categoryId, limit, month, year, spent];
+  List<Object> get props => <Object>[id, categoryId, limit, month, year, spent];
 }
